@@ -6,9 +6,11 @@
 #include <functional>
 #include <unistd.h>
 #include <sys/types.h>
+#include <direct.h>
 #include <sys/wait.h>
 #include <cstring>
 #include <limits.h>
+#include <errno.h>
 
 std::vector<std::string> args;
 
@@ -113,7 +115,7 @@ void Pwd()
 
 bool Cd(std::string &dirPath)
 {
-  if (_chdir(dirPath.c_str()) == 0)
+  if (chdir(dirPath.c_str()) == 0)
   {
     return true;
   }
