@@ -168,7 +168,11 @@ std::string relativeToAbsolute(std::string &dirPath)
   dirPath = "";
   for (int i = 0; i < Cwd.size(); i++)
   {
-    dirPath += Cwd[i] + "/";
+    dirPath += Cwd[i];
+    if (dirPath.back() != '/')
+    {
+      dirPath += "/";
+    }
   }
   return dirPath;
 }
