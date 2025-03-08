@@ -28,6 +28,13 @@ int main() {
       break;
     }
 
+    if(inputSeg[0]=="echo"){
+      for(int i = 1 ; i < inputSeg.size() ; i++){
+        std::cout << inputSeg[i] << " ";
+      }
+      std::cout << std::endl;
+    }
+
     std::cout << input << ": command not found" << std::endl;
   }
 }
