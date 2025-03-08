@@ -96,15 +96,16 @@ void runCommand(std::string &extPath)
 
   strcpy(arr, extPath.c_str());
 
-  const char **c_array = new const char *[args.size()];
-  for (size_t i = 0; i < args.size(); ++i)
+  std::vector<const char *> exec_args;
+  for (const auto &str : args)
   {
-    c_array[i] = args[i].c_str();
+    exec_args.push_back(str.c_str());
   }
+  exec_args.push_back(nullptr);
   pid_t pid = fork();
   if (pid == 0)
   {
-    if (execvp(arr, c_array) == -1)
+    if (execvp(arr, const_cast<char **>(exec_args.data())) == -1)
     {
       std::cerr << "Error executing command!" << std::endl;
     }
