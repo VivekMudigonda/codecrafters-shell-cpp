@@ -133,7 +133,7 @@ bool directoryExists(const std::string &dirPath)
   }
 }
 
-std::string relativeToAbsolute(std::string &dirPath)
+std::string relativeToAbsolute(std::string dirPath)
 {
   std::string cwd = Pwd();
   std::vector<std::string> Dir;
@@ -142,7 +142,6 @@ std::string relativeToAbsolute(std::string &dirPath)
   Input(Dir, dirPath, '/');
   Input(Cwd, cwd, '/');
   std::string curPath;
-  int j = 0;
   for (int i = 0; i < Dir.size(); i++)
   {
     if (Dir[i] != ".")
@@ -165,7 +164,7 @@ std::string relativeToAbsolute(std::string &dirPath)
       Cwd.push_back(DirWithoutDots[i]);
     }
   }
-  dirPath = "";
+  dirPath = "/";
   for (int i = 0; i < Cwd.size(); i++)
   {
     dirPath += Cwd[i];
