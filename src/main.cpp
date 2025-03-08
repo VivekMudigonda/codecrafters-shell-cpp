@@ -6,6 +6,7 @@
 #include <functional>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <cstring>
 
 std::vector<std::string> args;
@@ -113,7 +114,6 @@ void runCommand(std::string &extPath)
   else if (pid > 0)
   {
     wait(nullptr);
-    std::cout << "Child process finished." << std::endl;
   }
   else
   {
