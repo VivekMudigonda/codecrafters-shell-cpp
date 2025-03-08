@@ -6,11 +6,9 @@
 #include <functional>
 #include <unistd.h>
 #include <sys/types.h>
-#include <direct.h>
 #include <sys/wait.h>
 #include <cstring>
 #include <limits.h>
-#include <errno.h>
 
 std::vector<std::string> args;
 
@@ -113,8 +111,31 @@ void Pwd()
   }
 }
 
+bool directoryExists(const std::string &dirPath)
+{
+  struct stat info;
+
+  if (stat(dirPath.c_str(), &info) != 0)
+  {
+    return false;
+  }
+  else if (info.st_mode & S_IFDIR)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 bool Cd(std::string &dirPath)
 {
+  if (!directoryExists(dirPath))
+  {
+    std::cout << "cd: " << dirPath << " No such file or directory" << std::endl;
+    return false;
+  }
   if (chdir(dirPath.c_str()) == 0)
   {
     return true;
