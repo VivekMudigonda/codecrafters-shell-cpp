@@ -33,7 +33,7 @@ int main() {
         std::cout << inputSeg[i] << " ";
       }
       std::cout << std::endl;
-      break;
+      continue;
     }
 
     std::cout << input << ": command not found" << std::endl;
