@@ -2,6 +2,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 int main() {
   // Flush after every std::cout / std:cerr
@@ -13,6 +14,8 @@ int main() {
     std::cout << "$ ";
 
     std::getline(std::cin, input);
+
+    std::unordered_map<std::string,bool> mp = {{"echo",true},{"exit",true},{"type",true}};
 
     std::stringstream s(input);
 
@@ -36,6 +39,15 @@ int main() {
       continue;
     }
 
-    std::cout << input << ": command not found" << std::endl;
+    if(inputSeg[0]=="type"){
+      if(mp[inputSeg[1]]){
+        std::cout << inputSeg[1] << " is a shell builtin" << std::endl;
+      }
+      else{
+        std::cout << inputSeg[1] << " not found" << std::endl;
+      }
+      continue;
+    }
+    std::cout << input << ": not found" << std::endl;
   }
 }
