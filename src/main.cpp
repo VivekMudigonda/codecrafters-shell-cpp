@@ -12,13 +12,14 @@
 
 std::vector<std::string> args;
 
-std::unordered_map<std::string, bool> isBuiltin = {{"echo", true}, {"exit", true}, {"type", true}, {"pwd", true}};
+std::unordered_map<std::string, bool> isBuiltin = {{"echo", true}, {"exit", true}, {"type", true}, {"pwd", true}, {"cd", true}};
 
 enum class StringCode
 {
   echo,
   type,
   pwd,
+  cd,
   unknown
 };
 
@@ -30,6 +31,8 @@ StringCode hashString(const std::string &str)
     return StringCode::type;
   if (str == "pwd")
     return StringCode::pwd;
+  if (str == "cd")
+    return StringCode::cd;
   return StringCode::unknown;
 }
 
@@ -108,6 +111,18 @@ void Pwd()
   }
 }
 
+bool Cd(std::string &dirPath)
+{
+  if (_chdir(dirPath.c_str()) == 0)
+  {
+    return true;
+  }
+  else
+  {
+    std::cout << "cd: " << dirPath << " No such file or directory" << std::endl;
+    return false;
+  }
+}
 void runCommand(std::string &extPath)
 {
   char arr[extPath.length() + 1];
@@ -140,6 +155,7 @@ void runCommand(std::string &extPath)
 
 void Exec(std::string &input)
 {
+  std::string extPath = isExternal(args[0]);
   switch (hashString(args[0]))
   {
   case StringCode::echo:
@@ -151,8 +167,13 @@ void Exec(std::string &input)
   case StringCode::pwd:
     Pwd();
     break;
+  case StringCode::cd:
+    if (extPath != "")
+    {
+      Cd(extPath);
+      break;
+    }
   default:
-    std::string extPath = isExternal(args[0]);
     if (extPath != "")
     {
       runCommand(extPath);
