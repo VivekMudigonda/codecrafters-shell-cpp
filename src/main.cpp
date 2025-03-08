@@ -112,7 +112,7 @@ void runCommand(std::string &extPath)
   }
   else if (pid > 0)
   {
-    wait(NULL);
+    wait(nullptr);
     std::cout << "Child process finished." << std::endl;
   }
   else
