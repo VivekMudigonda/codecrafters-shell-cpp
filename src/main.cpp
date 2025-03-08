@@ -8,15 +8,17 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <cstring>
+#include <limits.h>
 
 std::vector<std::string> args;
 
-std::unordered_map<std::string, bool> isBuiltin = {{"echo", true}, {"exit", true}, {"type", true}};
+std::unordered_map<std::string, bool> isBuiltin = {{"echo", true}, {"exit", true}, {"type", true}, {"pwd", true}};
 
 enum class StringCode
 {
   echo,
   type,
+  pwd,
   unknown
 };
 
@@ -26,6 +28,8 @@ StringCode hashString(const std::string &str)
     return StringCode::echo;
   if (str == "type")
     return StringCode::type;
+  if (str == "pwd")
+    return StringCode::pwd;
   return StringCode::unknown;
 }
 
@@ -91,6 +95,19 @@ void Type()
   }
 }
 
+void Pwd()
+{
+  char cwd[PATH_MAX];
+  if (getcwd(cwd, sizeof(cwd)) != nullptr)
+  {
+    std::cout << cwd << std::endl;
+  }
+  else
+  {
+    std::cerr << "Error getting current working directory" << std::endl;
+  }
+}
+
 void runCommand(std::string &extPath)
 {
   char arr[extPath.length() + 1];
@@ -130,6 +147,9 @@ void Exec(std::string &input)
     break;
   case StringCode::type:
     Type();
+    break;
+  case StringCode::pwd:
+    Pwd();
     break;
   default:
     std::string extPath = isExternal(args[0]);
