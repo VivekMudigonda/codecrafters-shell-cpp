@@ -132,6 +132,7 @@ bool directoryExists(const std::string &dirPath)
 
 bool Cd(std::string &dirPath)
 {
+
   if (!directoryExists(dirPath))
   {
     std::cout << "cd: " << dirPath << " No such file or directory" << std::endl;
@@ -192,11 +193,8 @@ void Exec(std::string &input)
     Pwd();
     break;
   case StringCode::cd:
-    if (extPath != "")
-    {
-      Cd(extPath);
-      break;
-    }
+    Cd(args[1]);
+    break;
   default:
     if (extPath != "")
     {
