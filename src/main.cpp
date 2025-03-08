@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <functional>
 #include <unistd.h>
+#include <sys/types.h>
+#include <cstring>
 
 std::vector<std::string> args;
 
@@ -88,6 +90,36 @@ void Type()
   }
 }
 
+void runCommand(std::string &extPath)
+{
+  char arr[extPath.length() + 1];
+
+  strcpy(arr, extPath.c_str());
+
+  const char **c_array = new const char *[args.size()];
+  for (size_t i = 0; i < args.size(); ++i)
+  {
+    c_array[i] = args[i].c_str();
+  }
+  pid_t pid = fork();
+  if (pid == 0)
+  {
+    if (execvp(arr, c_array) == -1)
+    {
+      std::cerr << "Error executing command!" << std::endl;
+    }
+  }
+  else if (pid > 0)
+  {
+    wait(NULL);
+    std::cout << "Child process finished." << std::endl;
+  }
+  else
+  {
+    std::cerr << "Fork failed!" << std::endl;
+  }
+}
+
 void Exec(std::string &input)
 {
   switch (hashString(args[0]))
@@ -99,6 +131,12 @@ void Exec(std::string &input)
     Type();
     break;
   default:
+    std::string extPath = isExternal(args[1]);
+    if (extPath != "")
+    {
+      runCommand(extPath);
+      break;
+    }
     std::cout << input << ": not found" << std::endl;
   }
 }
