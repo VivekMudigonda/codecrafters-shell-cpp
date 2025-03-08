@@ -4,81 +4,129 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include <unistd.h>
 
 std::vector<std::string> args;
 
-std::unordered_map<std::string,bool> mp = {{"echo",true},{"exit",true},{"type",true}};
+std::unordered_map<std::string, bool> isBuiltin = {{"echo", true}, {"exit", true}, {"type", true}};
 
-enum class StringCode {
+enum class StringCode
+{
   echo,
   type,
   unknown
 };
 
-StringCode hashString(const std::string& str) {
-  if (str == "echo") return StringCode::echo;
-  if (str == "type")  return StringCode::type;
+StringCode hashString(const std::string &str)
+{
+  if (str == "echo")
+    return StringCode::echo;
+  if (str == "type")
+    return StringCode::type;
   return StringCode::unknown;
 }
 
-void Echo(){
-  for(int i = 1 ; i < args.size() ; i++){
+void Input(std::vector<std::string> &args, std::string &S, char delimeter)
+{
+  std::stringstream s(S);
+
+  std::string inputPart;
+
+  while (getline(s, inputPart, delimeter))
+  {
+    args.push_back(inputPart);
+  }
+}
+
+std::string isExternal(const std::string &command)
+{
+  // Use `access()` to check if the command exists in one of the directories in $PATH
+  std::string path = std::getenv("PATH");
+
+  if (path == "")
+  {
+    return "";
+  }
+  std::vector<std::string> Path;
+
+  Input(Path, path, ':');
+
+  for (int i = 0; i < Path.size(); i++)
+  {
+    std::string fullPath = std::string(Path[i]) + "/" + command;
+    if (access(fullPath.c_str(), X_OK) == 0)
+    {
+      return fullPath;
+    }
+  }
+
+  return "";
+}
+
+void Echo()
+{
+  for (int i = 1; i < args.size(); i++)
+  {
     std::cout << args[i] << " ";
   }
   std::cout << std::endl;
 }
 
-void Type(){
-  if(mp[args[1]]){
+void Type()
+{
+  std::string extPath = isExternal(args[1]);
+  if (isBuiltin[args[1]])
+  {
     std::cout << args[1] << " is a shell builtin" << std::endl;
   }
-  else{
+  else if (extPath != "")
+  {
+    std::cout << args[1] << " is " << extPath << std::endl;
+  }
+  else
+  {
     std::cout << args[1] << " not found" << std::endl;
   }
 }
 
-void Exec(std::string& input){
-  switch (hashString(args[0])) {
-    case StringCode::echo:
-      Echo();
-      break;
-    case StringCode::type:
-      Type();
-      break;
-    default:
-      std::cout << input << ": not found" << std::endl;
-    
+void Exec(std::string &input)
+{
+  switch (hashString(args[0]))
+  {
+  case StringCode::echo:
+    Echo();
+    break;
+  case StringCode::type:
+    Type();
+    break;
+  default:
+    std::cout << input << ": not found" << std::endl;
   }
 }
 
-int main() {
+int main()
+{
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
 
   std::string input;
-  while (true) {
+  while (true)
+  {
     std::cout << "$ ";
 
     std::getline(std::cin, input);
 
-    std::stringstream s(input);
-
-    std::string inputPart;
-    char c = ' ';   
-
-    while(getline(s,inputPart,c)){
-      args.push_back(inputPart);
-    }
-  
-    if(args[0]=="exit" && args[1]=="0"){
+    Input(args, input, ' ');
+    if (args[0] == "exit" && args[1] == "0")
+    {
       break;
     }
-    else if(args[0]=="\n"){
+    else if (args[0] == "\n")
+    {
       continue;
     }
 
     Exec(input);
-    
   }
 }
