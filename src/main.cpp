@@ -99,17 +99,20 @@ void Type()
   }
 }
 
-void Pwd()
+std::string Pwd()
 {
   char cwd[PATH_MAX];
+  std::string Cwd;
   if (getcwd(cwd, sizeof(cwd)) != nullptr)
   {
+    Cwd = cwd;
     std::cout << cwd << std::endl;
   }
   else
   {
     std::cerr << "Error getting current working directory" << std::endl;
   }
+  return Cwd;
 }
 
 bool directoryExists(const std::string &dirPath)
@@ -130,8 +133,50 @@ bool directoryExists(const std::string &dirPath)
   }
 }
 
+std::string relativeToAbsolute(std::string &dirPath)
+{
+  std::string cwd = Pwd();
+  std::vector<std::string> Dir;
+  std::vector<std::string> Cwd;
+  std::vector<std::string> DirWithoutDots;
+  Input(Dir, dirPath, '/');
+  Input(Cwd, cwd, '/');
+  std::string curPath;
+  int j = 0;
+  for (int i = 0; i < Dir.size(); i++)
+  {
+    if (Dir[i] != ".")
+    {
+      DirWithoutDots.push_back(Dir[i]);
+    }
+  }
+  for (int i = 0; i < DirWithoutDots.size(); i++)
+  {
+    if (DirWithoutDots[i] == "..")
+    {
+      if (Cwd.empty())
+      {
+        return "";
+      }
+      Cwd.pop_back();
+    }
+    else
+    {
+      Cwd.push_back(DirWithoutDots[i]);
+    }
+  }
+  dirPath = "";
+  for (int i = 0; i < Cwd.size(); i++)
+  {
+    dirPath += Cwd[i] + "/";
+  }
+  return dirPath;
+}
+
 bool Cd(std::string &dirPath)
 {
+
+  dirPath = relativeToAbsolute(dirPath);
 
   if (!directoryExists(dirPath))
   {
