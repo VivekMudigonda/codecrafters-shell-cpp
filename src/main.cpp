@@ -132,7 +132,7 @@ void Exec(std::string &input)
     Type();
     break;
   default:
-    std::string extPath = isExternal(args[1]);
+    std::string extPath = isExternal(args[0]);
     if (extPath != "")
     {
       runCommand(extPath);
