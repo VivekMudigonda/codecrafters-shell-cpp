@@ -40,7 +40,6 @@ void Input(std::vector<std::string> &args, std::string &S, char delimeter)
 
 std::string isExternal(const std::string &command)
 {
-  // Use `access()` to check if the command exists in one of the directories in $PATH
   std::string path = std::getenv("PATH");
 
   if (path == "")
