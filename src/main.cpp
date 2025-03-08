@@ -144,7 +144,7 @@ bool Cd(std::string &dirPath)
   }
   else
   {
-    std::cout << "cd: " << dirPath << " No such file or directory" << std::endl;
+    std::cout << "cd: " << dirPath << ": No such file or directory" << std::endl;
     return false;
   }
 }
