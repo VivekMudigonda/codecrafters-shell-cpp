@@ -49,30 +49,39 @@ void Input(std::vector<std::string> &args, const std::string &S, char delimeter)
   }
 }
 
-std::string isExternal(const std::string &command)
+std::string isExternal(const std::string &execName)
 {
   const char *pathEnv = getenv("PATH");
   if (pathEnv == nullptr)
   {
+    std::cerr << "Error: PATH environment variable is not set." << std::endl;
     return "";
   }
 
-  char *pathCopy = strdup(pathEnv);
-  char *dir = strtok(pathCopy, ":");
+  std::string path = pathEnv;
 
-  while (dir != nullptr)
+  size_t start = 0;
+  size_t end = 0;
+  while ((end = path.find(':', start)) != std::string::npos)
   {
-    std::string fullPath = std::string(dir) + "/" + command;
+    std::string dir = path.substr(start, end - start);
+    std::string fullPath = dir + "/" + execName;
 
     if (access(fullPath.c_str(), X_OK) == 0)
     {
-      free(pathCopy);
       return fullPath;
     }
-    dir = strtok(nullptr, ":");
+
+    start = end + 1;
   }
 
-  free(pathCopy);
+  std::string lastDir = path.substr(start);
+  std::string fullPath = lastDir + "/" + execName;
+  if (access(fullPath.c_str(), X_OK) == 0)
+  {
+    return fullPath;
+  }
+
   return "";
 }
 
