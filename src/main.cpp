@@ -51,32 +51,28 @@ void Input(std::vector<std::string> &args, const std::string &S, char delimeter)
 
 std::string isExternal(const std::string &command)
 {
-  std::string path = std::getenv("PATH");
-
-  if (path == "")
+  const char *pathEnv = getenv("PATH");
+  if (pathEnv == nullptr)
   {
     return "";
   }
 
-  std::string Path = path;
+  char *pathCopy = strdup(pathEnv);
+  char *dir = strtok(pathCopy, ":");
 
-  while (!Path.empty())
+  while (dir != nullptr)
   {
-    while (!Path.empty() && Path.back() != '/')
-    {
-      Path.pop_back();
-    }
-    if (!Path.empty())
-    {
-      Path.pop_back();
-    }
-    std::string fullPath = std::string(Path) + "/" + command;
+    std::string fullPath = std::string(dir) + "/" + command;
+
     if (access(fullPath.c_str(), X_OK) == 0)
     {
+      free(pathCopy);
       return fullPath;
     }
+    dir = strtok(nullptr, ":");
   }
 
+  free(pathCopy);
   return "";
 }
 
