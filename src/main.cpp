@@ -133,58 +133,20 @@ bool directoryExists(const std::string &dirPath)
   }
 }
 
-std::string relativeToAbsolute(std::string dirPath)
+std::string relativeToAbsolute(const std::string &relativePath)
 {
-  std::string cwd = Pwd();
-  std::vector<std::string> Dir;
-  std::vector<std::string> Cwd;
-  std::vector<std::string> DirWithoutDots;
-  Input(Dir, dirPath, '/');
-  Input(Cwd, cwd, '/');
-  std::string curPath;
-  bool addCwd = false;
-  for (int i = 0; i < Dir.size(); i++)
-  {
-    if (Dir[i] != ".")
-    {
-      DirWithoutDots.push_back(Dir[i]);
-    }
-    if (Dir[i] == "." || Dir[i] == "..")
-    {
-      addCwd = true;
-    }
-  }
-  if (!addCwd)
-  {
-    return dirPath;
-  }
-  for (int i = 0; i < DirWithoutDots.size(); i++)
-  {
-    if (DirWithoutDots[i] == "..")
-    {
-      if (Cwd.empty())
-      {
-        return "";
-      }
-      Cwd.pop_back();
-    }
-    else
-    {
-      Cwd.push_back(DirWithoutDots[i]);
-    }
-  }
-  std::string dirP = "/";
-  for (int i = 0; i < Cwd.size(); i++)
-  {
-    dirP += Cwd[i];
-    if (dirP.back() != '/')
-    {
-      dirP += "/";
-    }
-  }
-  return dirP;
-}
+  char absolutePath[PATH_MAX];
 
+  if (realpath(relativePath.c_str(), absolutePath) != nullptr)
+  {
+    return std::string(absolutePath);
+  }
+  else
+  {
+    std::cerr << "Error resolving path: " << strerror(errno) << std::endl;
+    return "";
+  }
+}
 bool Cd(std::string &dirPath)
 {
   std::string dirP = relativeToAbsolute(dirPath);
