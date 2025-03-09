@@ -142,12 +142,21 @@ std::string relativeToAbsolute(std::string dirPath)
   Input(Dir, dirPath, '/');
   Input(Cwd, cwd, '/');
   std::string curPath;
+  bool addCwd = false;
   for (int i = 0; i < Dir.size(); i++)
   {
     if (Dir[i] != ".")
     {
       DirWithoutDots.push_back(Dir[i]);
     }
+    if (Dir[i] == "." || Dir[i] == "..")
+    {
+      addCwd = true;
+    }
+  }
+  if (!addCwd)
+  {
+    return dirPath;
   }
   for (int i = 0; i < DirWithoutDots.size(); i++)
   {
@@ -178,13 +187,14 @@ std::string relativeToAbsolute(std::string dirPath)
 
 bool Cd(std::string &dirPath)
 {
+  std::string dirP = relativeToAbsolute(dirPath);
 
-  if (!directoryExists(dirPath))
+  if (!directoryExists(dirP))
   {
     std::cout << "cd: " << dirPath << ": No such file or directory" << std::endl;
     return false;
   }
-  if (chdir(dirPath.c_str()) == 0)
+  if (chdir(dirP.c_str()) == 0)
   {
     return true;
   }
