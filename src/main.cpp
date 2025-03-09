@@ -179,9 +179,7 @@ std::string relativeToAbsolute(std::string dirPath)
 bool Cd(std::string &dirPath)
 {
 
-  std::string dirP = relativeToAbsolute(dirPath);
-
-  if (!directoryExists(dirP))
+    if (!directoryExists(dirP))
   {
     std::cout << "cd: " << dirPath << ": No such file or directory" << std::endl;
     return false;
