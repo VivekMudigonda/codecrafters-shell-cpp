@@ -149,7 +149,7 @@ std::string relativeToAbsolute(const std::string &relativePath)
     return "";
   }
 }
-bool Cd(const std::string &dirPath)
+bool Cd(std::string &dirPath)
 {
   std::string dirP = relativeToAbsolute(dirPath);
 
