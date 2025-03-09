@@ -164,7 +164,7 @@ std::string relativeToAbsolute(std::string dirPath)
       Cwd.push_back(DirWithoutDots[i]);
     }
   }
-  dirP = "/";
+  std::string dirP = "/";
   for (int i = 0; i < Cwd.size(); i++)
   {
     dirP += Cwd[i];
