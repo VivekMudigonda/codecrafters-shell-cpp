@@ -143,7 +143,6 @@ std::string relativeToAbsolute(const std::string &relativePath)
   }
   else
   {
-    std::cerr << "Error resolving path: " << strerror(errno) << std::endl;
     return "";
   }
 }
