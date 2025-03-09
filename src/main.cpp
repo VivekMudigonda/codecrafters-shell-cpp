@@ -156,7 +156,7 @@ std::string expandHomeDirectory(const std::string &path)
 
 std::string relativeToAbsolute(const std::string &relativePath)
 {
-  std::string expandedPath = expandHomeDirectory(path);
+  std::string expandedPath = expandHomeDirectory(relativePath);
   if (expandedPath.empty())
   {
     return "";
