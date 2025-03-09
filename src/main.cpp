@@ -37,7 +37,7 @@ StringCode hashString(const std::string &str)
   return StringCode::unknown;
 }
 
-void Input(std::vector<std::string> &args, std::string &S, char delimeter)
+void Input(std::vector<std::string> &args, const std::string &S, char delimeter)
 {
   std::stringstream s(S);
 
@@ -57,13 +57,20 @@ std::string isExternal(const std::string &command)
   {
     return "";
   }
-  std::vector<std::string> Path;
 
-  Input(Path, path, ':');
+  std::string Path = path;
 
-  for (int i = 0; i < Path.size(); i++)
+  while (!Path.empty())
   {
-    std::string fullPath = std::string(Path[i]) + "/" + command;
+    while (!Path.empty() && Path.back() != '/')
+    {
+      Path.pop_back();
+    }
+    if (!Path.empty())
+    {
+      Path.pop_back();
+    }
+    std::string fullPath = std::string(Path) + "/" + command;
     if (access(fullPath.c_str(), X_OK) == 0)
     {
       return fullPath;
@@ -146,7 +153,7 @@ std::string relativeToAbsolute(const std::string &relativePath)
     return "";
   }
 }
-bool Cd(std::string &dirPath)
+bool Cd(const std::string &dirPath)
 {
   std::string dirP = relativeToAbsolute(dirPath);
 
@@ -165,7 +172,7 @@ bool Cd(std::string &dirPath)
     return false;
   }
 }
-void runCommand(std::string &extPath)
+void runCommand(const std::string &extPath)
 {
   char arr[extPath.length() + 1];
 
