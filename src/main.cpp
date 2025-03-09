@@ -155,7 +155,7 @@ bool Cd(std::string &dirPath)
 
   if (!directoryExists(dirP))
   {
-    std::cout << "cd: " << dirPath << ": No such file or directory" << std::endl;
+    std::cout << "cd: " << dirP << ": No such file or directory" << std::endl;
     return false;
   }
   if (chdir(dirP.c_str()) == 0)
