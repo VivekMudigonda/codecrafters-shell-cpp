@@ -136,11 +136,34 @@ bool directoryExists(const std::string &dirPath)
   }
 }
 
+std::string expandHomeDirectory(const std::string &path)
+{
+  if (path[0] == '~')
+  {
+    const char *homeDir = getenv("HOME");
+    if (homeDir != nullptr)
+    {
+      return std::string(homeDir) + path.substr(1);
+    }
+    else
+    {
+      std::cerr << "Error: HOME environment variable is not set." << std::endl;
+      return "";
+    }
+  }
+  return path;
+}
+
 std::string relativeToAbsolute(const std::string &relativePath)
 {
+  std::string expandedPath = expandHomeDirectory(path);
+  if (expandedPath.empty())
+  {
+    return "";
+  }
   char absolutePath[PATH_MAX];
 
-  if (realpath(relativePath.c_str(), absolutePath) != nullptr)
+  if (realpath(expandedPath.c_str(), absolutePath) != nullptr)
   {
     return std::string(absolutePath);
   }
@@ -155,7 +178,7 @@ bool Cd(std::string &dirPath)
 
   if (!directoryExists(dirP))
   {
-    std::cout << "cd: " << dirP << ": No such file or directory" << std::endl;
+    std::cout << "cd: " << dirPath << ": No such file or directory" << std::endl;
     return false;
   }
   if (chdir(dirP.c_str()) == 0)
