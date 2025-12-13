@@ -16,3 +16,4 @@ const std::string EXE_SUFFIX = ".exe";
 #define DIR_SEPARATOR '/'
 const std::string EXE_SUFFIX = "";
 #endif
+std::string isExternal(const std::string &execName);
