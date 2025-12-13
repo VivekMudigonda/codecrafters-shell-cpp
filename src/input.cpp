@@ -14,7 +14,10 @@ std::vector<std::string> splitWhitespace(const std::string &s)
 }
 bool isSpecial(char input)
 {
-    return !backSlash&&(input == '\'' || input == ' ' || input == '\"');
+    return (!backSlash)&&(input == '\'' || input == ' ' || input == '\"');
+}
+bool isSpecialBackSlash(char input){
+    return (!backSlash)&&(input == '\"' || input == '\\');
 }
 void flush_token(std::string &token)
 {
@@ -26,8 +29,14 @@ void flush_token(std::string &token)
 }
 bool readDoubleQuoted(const std::string &input_string,int &j,std::string &token){
     j++;
-    while(j<input_string.size()&&(input_string[j]!='\"')){
+    while(j<input_string.size()&&!(input_string[j]=='\"' && (!backSlash))){
+        if((!backSlash)&&input_string[j]=='\\'&&(j+1<input_string.size())&&isSpecialBackSlash(input_string[j+1])){
+            backSlash = true;
+            j++;
+            continue;
+        }
         token += input_string[j];
+        backSlash = false;
         j++;
     }
     if(j==input_string.size()){

@@ -8,24 +8,8 @@
 #include "stringCode.h"
 #include "type.h"
 #include "cd.h"
+#include "runCommand.h"
 std::vector<std::string> args;
-
-int runCommand(const std::string &program)
-{
-  std::string cmd;
-
-  for (const auto &arg : args)
-  {
-    cmd += " \"" + arg + "\"";
-  }
-  int result = std::system(cmd.c_str());
-
-  if (result == -1)
-  {
-    std::cerr << "Failed to run command\n";
-  }
-  return result;
-}
 
 void Exec(std::string &input)
 {
@@ -47,7 +31,9 @@ void Exec(std::string &input)
   default:
     if (extPath != "")
     {
-      runCommand(extPath);
+      std::string program = args.front();
+      args.erase(args.begin());
+      runCommand(program);
       break;
     }
     std::cout << input << ": not found" << std::endl;
