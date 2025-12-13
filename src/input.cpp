@@ -42,6 +42,7 @@ bool readUnqouted(const std::string &input_string, int &j, std::string &token)
 void Input(std::string &S)
 {
     int j = 0;
+    std::string token;
     while (j < S.size())
     {
         if (S[j] == ' ')
@@ -49,12 +50,12 @@ void Input(std::string &S)
             j++;
             continue;
         }
-        std::string token;
+        token.clear();
         if (S[j] == '\'')
         {
             readQuoted(S, j, token);
         }
-        else if (S[j] == ' ')
+        else
         {
             readUnqouted(S, j, token);
         }
