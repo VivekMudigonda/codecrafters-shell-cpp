@@ -1,4 +1,5 @@
 #include "globals.h"
+bool backSlash = false;
 std::vector<std::string> splitWhitespace(const std::string &s)
 {
     std::stringstream ss(s);
@@ -13,7 +14,7 @@ std::vector<std::string> splitWhitespace(const std::string &s)
 }
 bool isSpecial(char input)
 {
-    return input == '\'' || input == ' ' || input == '\"';
+    return !backSlash&&(input == '\'' || input == ' ' || input == '\"');
 }
 void flush_token(std::string &token)
 {
@@ -25,7 +26,7 @@ void flush_token(std::string &token)
 }
 bool readDoubleQuoted(const std::string &input_string,int &j,std::string &token){
     j++;
-    while(j<input_string.size()&&input_string[j]!='\"'){
+    while(j<input_string.size()&&(input_string[j]!='\"')){
         token += input_string[j];
         j++;
     }
@@ -54,9 +55,16 @@ bool readQuoted(const std::string &input_string, int &j, std::string &token)
 }
 bool readUnQouted(const std::string &input_string, int &j, std::string &token)
 {
+    
     while (j < input_string.size() && !isSpecial(input_string[j]))
     {
+        if(input_string[j]=='\\'&&!backSlash){
+            backSlash = true;
+            j++;
+            continue;
+        }
         token += input_string[j];
+        backSlash = false;
         j++;
     }
     return true;
@@ -69,24 +77,31 @@ void Input(std::string &S)
     {
         if (S[j] == ' ')
         {
+            backSlash = false;
             flush_token(token);
             j++;
             continue;
         }
-        if(S[j]=='\"'){
+        if(S[j]=='\"'&&!backSlash){
+            backSlash = false;
             if(!readDoubleQuoted(S,j,token)){
                 return;
             }
         }
-        else if (S[j] == '\'')
+        else if (S[j] == '\''&&!backSlash)
         {
+            backSlash = false;
             if (!readQuoted(S, j, token))
             {
                 return;
             }
         }
+        else if(S[j]=='\\'&&!backSlash){
+            backSlash = true;
+        }
         else
         {
+            backSlash = false;
             readUnQouted(S, j, token);
         }
     }
