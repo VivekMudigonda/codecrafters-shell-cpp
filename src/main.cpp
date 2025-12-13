@@ -68,7 +68,7 @@ int main()
     std::getline(std::cin, input);
 
     args.clear();
-    Input(args, input, ' ');
+    Input(input);
 
     if (args[0] == "exit" && args[1] == "0")
     {
