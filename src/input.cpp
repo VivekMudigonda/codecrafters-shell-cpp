@@ -13,7 +13,7 @@ std::vector<std::string> splitWhitespace(const std::string &s)
 }
 bool isSpecial(char input)
 {
-    return input == '\'' || input == ' ';
+    return input == '\'' || input == ' ' || input == '\"';
 }
 void flush_token(std::string &token)
 {
@@ -22,6 +22,19 @@ void flush_token(std::string &token)
         args.push_back(token);
     }
     token.clear();
+}
+bool readDoubleQuoted(const std::string &input_string,int &j,std::string &token){
+    j++;
+    while(j<input_string.size()&&input_string[j]!='\"'){
+        token += input_string[j];
+        j++;
+    }
+    if(j==input_string.size()){
+        std::cerr<<"Error: unmatched double quote\n";
+        return false;
+    }
+    j++;
+    return true;
 }
 bool readQuoted(const std::string &input_string, int &j, std::string &token)
 {
@@ -39,7 +52,7 @@ bool readQuoted(const std::string &input_string, int &j, std::string &token)
     j++;
     return true;
 }
-bool readUnqouted(const std::string &input_string, int &j, std::string &token)
+bool readUnQouted(const std::string &input_string, int &j, std::string &token)
 {
     while (j < input_string.size() && !isSpecial(input_string[j]))
     {
@@ -60,7 +73,12 @@ void Input(std::string &S)
             j++;
             continue;
         }
-        if (S[j] == '\'')
+        if(S[j]=='\"'){
+            if(!readDoubleQuoted(S,j,token)){
+                return;
+            }
+        }
+        else if (S[j] == '\'')
         {
             if (!readQuoted(S, j, token))
             {
@@ -69,7 +87,7 @@ void Input(std::string &S)
         }
         else
         {
-            readUnqouted(S, j, token);
+            readUnQouted(S, j, token);
         }
     }
     flush_token(token);
