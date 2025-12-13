@@ -15,6 +15,14 @@ bool isSpecial(char input)
 {
     return input == '\'' || input == ' ';
 }
+void flush_token(std::string &token)
+{
+    if (!token.empty())
+    {
+        args.push_back(token);
+    }
+    token.clear();
+}
 bool readQuoted(const std::string &input_string, int &j, std::string &token)
 {
     j++;
@@ -36,6 +44,7 @@ bool readUnqouted(const std::string &input_string, int &j, std::string &token)
     while (j < input_string.size() && !isSpecial(input_string[j]))
     {
         token += input_string[j];
+        j++;
     }
     return true;
 }
@@ -47,21 +56,21 @@ void Input(std::string &S)
     {
         if (S[j] == ' ')
         {
+            flush_token(token);
             j++;
             continue;
         }
-        token.clear();
         if (S[j] == '\'')
         {
-            readQuoted(S, j, token);
+            if (!readQuoted(S, j, token))
+            {
+                return;
+            }
         }
         else
         {
             readUnqouted(S, j, token);
         }
-        if (!token.empty())
-        {
-            args.push_back(token);
-        }
     }
+    flush_token(token);
 }
