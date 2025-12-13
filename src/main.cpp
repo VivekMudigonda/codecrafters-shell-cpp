@@ -12,7 +12,7 @@ std::vector<std::string> args;
 
 int runCommand(const std::string &program)
 {
-  std::string cmd = program;
+  std::string cmd;
 
   for (const auto &arg : args)
   {
@@ -69,8 +69,7 @@ int main()
 
     args.clear();
     Input(input);
-
-    if (args[0] == "exit" && args[1] == "0")
+    if (args[0] == "exit")
     {
       break;
     }
@@ -78,7 +77,7 @@ int main()
     {
       continue;
     }
-
+    
     Exec(input);
   }
 }
