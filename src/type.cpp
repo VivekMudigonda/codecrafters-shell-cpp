@@ -1,5 +1,5 @@
 #include "globals.h"
-#include "isExternal.cpp"
+#include "isExternal.h"
 
 std::unordered_map<std::string, bool> isBuiltin = {{"echo", true}, {"exit", true}, {"type", true}, {"pwd", true}, {"cd", true}};
 void Type()
