@@ -32,3 +32,10 @@ Note: This section is for stages 2 and beyond.
    `src/main.cpp`.
 1. Commit your changes and run `git push origin master` to submit your solution
    to CodeCrafters. Test output will be streamed to your terminal.
+
+# For Users 
+1. If you wish to use the shell via building it locally run these commands
+```
+g++ -std=c++23 -Wall -Wextra -pedantic src/*.cpp -Iinclude -o shell
+./shell
+```

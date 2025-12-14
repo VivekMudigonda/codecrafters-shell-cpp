@@ -15,27 +15,22 @@ std::vector<std::string> args;
 void Exec(std::string &input,Redirect &r)
 {
   std::string extPath = isExternal(args[0]);
+  if(hashString(args[0])!=StringCode::unknown){
+    RedirectOutErr(r);
+  }
   switch (hashString(args[0]))
   {
   case StringCode::echo:
-    RedirectOutErr(r);
     Echo();
-    endRedirect();
     break;
   case StringCode::type:
-    RedirectOutErr(r);
     Type();
-    endRedirect();
     break;
   case StringCode::pwd:
-    RedirectOutErr(r);
     Pwd();
-    endRedirect();
     break;
   case StringCode::cd:
-    RedirectOutErr(r);
     Cd(args[1]);
-    endRedirect();
     break;
   default:
     if (extPath != "")
@@ -47,6 +42,7 @@ void Exec(std::string &input,Redirect &r)
     }
     std::cout << input << ": not found" << std::endl;
   }
+  endRedirect();
 }
 
 int main()
