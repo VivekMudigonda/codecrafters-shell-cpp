@@ -1,2 +1,4 @@
+#pragma once
 #include "globals.h"
-int runCommand(std::string program);
+#include "redirect.h"
+int runCommand(std::string program,Redirect &r);

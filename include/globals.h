@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <limits.h>
+#include <fcntl.h>
 #endif
 
 #include <vector>
@@ -15,6 +16,7 @@
 #include <unordered_map>
 #include <cstring>
 #include <sstream>
+#include <fstream>
 #include <functional>
 #include <filesystem>
 extern std::vector<std::string> args;

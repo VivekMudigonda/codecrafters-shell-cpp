@@ -9,31 +9,40 @@
 #include "type.h"
 #include "cd.h"
 #include "runCommand.h"
+#include "redirect.h"
 std::vector<std::string> args;
 
-void Exec(std::string &input)
+void Exec(std::string &input,Redirect &r)
 {
   std::string extPath = isExternal(args[0]);
   switch (hashString(args[0]))
   {
   case StringCode::echo:
+    RedirectOutErr(r);
     Echo();
+    endRedirect();
     break;
   case StringCode::type:
+    RedirectOutErr(r);
     Type();
+    endRedirect();
     break;
   case StringCode::pwd:
+    RedirectOutErr(r);
     Pwd();
+    endRedirect();
     break;
   case StringCode::cd:
+    RedirectOutErr(r);
     Cd(args[1]);
+    endRedirect();
     break;
   default:
     if (extPath != "")
     {
       std::string program = args.front();
       args.erase(args.begin());
-      runCommand(program);
+      runCommand(program,r);
       break;
     }
     std::cout << input << ": not found" << std::endl;
@@ -63,7 +72,7 @@ int main()
     {
       continue;
     }
-    
-    Exec(input);
+    Redirect r = pareseRedirects(args);
+    Exec(input,r);
   }
 }

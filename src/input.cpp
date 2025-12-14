@@ -14,10 +14,11 @@ std::vector<std::string> splitWhitespace(const std::string &s)
 }
 bool isSpecial(char input)
 {
-    return (!backSlash)&&(input == '\'' || input == ' ' || input == '\"');
+    return (!backSlash) && (input == '\'' || input == ' ' || input == '\"');
 }
-bool isSpecialBackSlash(char input){
-    return (!backSlash)&&(input == '\"' || input == '\\');
+bool isSpecialBackSlash(char input)
+{
+    return (!backSlash) && (input == '\"' || input == '\\');
 }
 void flush_token(std::string &token)
 {
@@ -27,10 +28,13 @@ void flush_token(std::string &token)
     }
     token.clear();
 }
-bool readDoubleQuoted(const std::string &input_string,int &j,std::string &token){
+bool readDoubleQuoted(const std::string &input_string, int &j, std::string &token)
+{
     j++;
-    while(j<input_string.size()&&!(input_string[j]=='\"' && (!backSlash))){
-        if((!backSlash)&&input_string[j]=='\\'&&(j+1<input_string.size())&&isSpecialBackSlash(input_string[j+1])){
+    while (j < input_string.size() && !(input_string[j] == '\"' && (!backSlash)))
+    {
+        if (input_string[j] == '\\' && (j + 1 < input_string.size()) && isSpecialBackSlash(input_string[j + 1]))
+        {
             backSlash = true;
             j++;
             continue;
@@ -39,8 +43,9 @@ bool readDoubleQuoted(const std::string &input_string,int &j,std::string &token)
         backSlash = false;
         j++;
     }
-    if(j==input_string.size()){
-        std::cerr<<"Error: unmatched double quote\n";
+    if (j == input_string.size())
+    {
+        std::cerr << "Error: unmatched double quote\n";
         return false;
     }
     j++;
@@ -64,10 +69,11 @@ bool readQuoted(const std::string &input_string, int &j, std::string &token)
 }
 bool readUnQouted(const std::string &input_string, int &j, std::string &token)
 {
-    
+
     while (j < input_string.size() && !isSpecial(input_string[j]))
     {
-        if(input_string[j]=='\\'&&!backSlash){
+        if (input_string[j] == '\\' && !backSlash)
+        {
             backSlash = true;
             j++;
             continue;
@@ -91,13 +97,15 @@ void Input(std::string &S)
             j++;
             continue;
         }
-        if(S[j]=='\"'&&!backSlash){
+        if (S[j] == '\"' && !backSlash)
+        {
             backSlash = false;
-            if(!readDoubleQuoted(S,j,token)){
+            if (!readDoubleQuoted(S, j, token))
+            {
                 return;
             }
         }
-        else if (S[j] == '\''&&!backSlash)
+        else if (S[j] == '\'' && !backSlash)
         {
             backSlash = false;
             if (!readQuoted(S, j, token))
@@ -105,7 +113,8 @@ void Input(std::string &S)
                 return;
             }
         }
-        else if(S[j]=='\\'&&!backSlash){
+        else if (S[j] == '\\' && !backSlash)
+        {
             backSlash = true;
         }
         else
